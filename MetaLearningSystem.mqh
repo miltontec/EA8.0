@@ -1309,7 +1309,7 @@ public:
         dir = MathMax(0, MathMin(1, dir));
 
         // Obtener celda de performance contextual
-        ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
+        ML_ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
 
         // Peso base del indicador
         double baseWeight = m_indicators[indicatorId].baseWeight;
@@ -1522,7 +1522,7 @@ public:
         string dirName[] = {"BUY", "SELL"};
         string resultIcon = success ? "✅" : "❌";
 
-        ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
+        ML_ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
 
         Print(StringFormat(
             "%s APRENDIZAJE | %s | %s-%s-%s | WR: %.1f%% (%d/%d) | Profit: $%.2f | Racha: %dW/%dL",
@@ -1677,7 +1677,7 @@ public:
             for(int ses = 0; ses < 3; ses++) {
                 for(int vol = 0; vol < 2; vol++) {
                     for(int dir = 0; dir < 2; dir++) {
-                        ContextualPerformanceCell cell = m_performanceMatrix[ind][ses][vol][dir];
+                        ML_ContextualPerformanceCell cell = m_performanceMatrix[ind][ses][vol][dir];
                         if(cell.totalSignals >= m_minSampleSize && cell.winRate > bestWR) {
                             bestWR = cell.winRate;
                             bestSes = ses;
@@ -1730,7 +1730,7 @@ public:
             for(int ses = 0; ses < 3; ses++) {
                 for(int vol = 0; vol < 2; vol++) {
                     for(int dir = 0; dir < 2; dir++) {
-                        ContextualPerformanceCell cell = m_performanceMatrix[ind][ses][vol][dir];
+                        ML_ContextualPerformanceCell cell = m_performanceMatrix[ind][ses][vol][dir];
 
                         FileWrite(handle,
                             m_indicators[ind].name,
@@ -1773,7 +1773,7 @@ public:
             for(int ses = 0; ses < 3; ses++) {
                 for(int vol = 0; vol < 2; vol++) {
                     for(int dir = 0; dir < 2; dir++) {
-                        ContextualPerformanceCell cell = m_performanceMatrix[ind][ses][vol][dir];
+                        ML_ContextualPerformanceCell cell = m_performanceMatrix[ind][ses][vol][dir];
 
                         FileWriteInteger(handle, cell.totalSignals);
                         FileWriteInteger(handle, cell.wins);
@@ -3811,7 +3811,7 @@ private:
         int hour = dt.hour;
         
         if(hour >= 0 && hour < 8) return SESSION_ASIAN;
-        if(hour >= 8 && hour < 13) return SESSION_LONDON;
+        if(hour >= 8 && hour < 13) return SESSION_LONDON_ML;
         if(hour >= 13 && hour < 20) return SESSION_NEWYORK;
         if(hour >= 20 && hour < 22) return SESSION_OVERLAP;
         
@@ -3827,7 +3827,7 @@ ENUM_MARKET_SESSION GetCurrentSession()
     TimeToStruct(now, dt);
     int hour = dt.hour;
     if(hour >= 0 && hour < 8)   return SESSION_ASIAN;
-    if(hour >= 8 && hour < 13)  return SESSION_LONDON;
+    if(hour >= 8 && hour < 13)  return SESSION_LONDON_ML;
     if(hour >= 13 && hour < 20) return SESSION_NEWYORK;
     if(hour >= 20 && hour < 22) return SESSION_OVERLAP;
     return SESSION_CLOSED;
