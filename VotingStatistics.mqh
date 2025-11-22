@@ -2,6 +2,9 @@
 //| AdaptiveVotingSystem.mqh - Sistema de Votación Adaptativo v4.0  |
 //| Sistema inteligente que aprende y especializa indicadores       |
 //+------------------------------------------------------------------+
+#ifndef ADAPTIVE_VOTING_SYSTEM_MQH
+#define ADAPTIVE_VOTING_SYSTEM_MQH
+
 #property copyright "Advanced Trading System 2025"
 #property version   "4.00"
 #property strict
@@ -29,12 +32,9 @@ enum ENUM_MARKET_DIRECTION {
     DIR_BULLISH = 1   // Alcista
 };
 
-// Régimen de mercado
-enum ENUM_MARKET_REGIME {
-    REGIME_TRENDING     = 0,  // Tendencia fuerte (ADX > 25)
-    REGIME_RANGING      = 1,  // Rango lateral (ADX < 20)
-    REGIME_TRANSITION   = 2   // Transición (ADX 20-25)
-};
+// Régimen de mercado - Usar definición de RegimeDetectionSystem.mqh
+// ENUM_MARKET_REGIME se define en RegimeDetectionSystem.mqh con valores completos
+#include <RegimeDetectionSystem.mqh>
 
 // Nivel de expertise del indicador en un contexto
 enum ENUM_EXPERTISE_LEVEL {
@@ -80,7 +80,7 @@ struct MarketContextSnapshot {
         timestamp = 0;
         volatility = VOL_LOW;
         direction = DIR_BULLISH;
-        regime = REGIME_RANGING;
+        regime = REGIME_RANGING;  // Valor por defecto
         atrValue = 0.0;
         atrPercentile = 50.0;
         spreadValue = 0.0;
@@ -400,8 +400,13 @@ struct IndicatorSpecialization {
         globalMetrics.Initialize();
         globalRank = 5;
 
-        ArrayInitialize(expertContexts, "");
-        ArrayInitialize(competentContexts, "");
+        // Inicializar arrays de strings manualmente
+        for(int i = 0; i < 20; i++) {
+            expertContexts[i] = "";
+        }
+        for(int i = 0; i < 30; i++) {
+            competentContexts[i] = "";
+        }
     }
 
     // Agregar un contexto experto
@@ -617,22 +622,22 @@ public:
         context.spreadValue = spread;
         context.spreadPercentile = CalculateSpreadPercentile(spread);
 
+        // Detectar dirección primero (necesario para régimen)
+        double maFast = GetMA(m_maFastHandle);
+        double maSlow = GetMA(m_maSlowHandle);
+        context.direction = (maFast > maSlow) ? DIR_BULLISH : DIR_BEARISH;
+
         // Detectar régimen de mercado
         double adx = GetCurrentADX();
         context.trendStrength = MathMin(1.0, adx / 50.0);  // Normalizar ADX a 0-1
 
         if(adx > 25.0) {
-            context.regime = REGIME_TRENDING;
+            context.regime = (context.direction == DIR_BULLISH) ? REGIME_TRENDING_UP : REGIME_TRENDING_DOWN;
         } else if(adx < 20.0) {
             context.regime = REGIME_RANGING;
         } else {
             context.regime = REGIME_TRANSITION;
         }
-
-        // Detectar dirección
-        double maFast = GetMA(m_maFastHandle);
-        double maSlow = GetMA(m_maSlowHandle);
-        context.direction = (maFast > maSlow) ? DIR_BULLISH : DIR_BEARISH;
 
         // Calcular momentum
         context.momentumStrength = CalculateMomentumStrength(maFast, maSlow, atr);
@@ -940,14 +945,13 @@ public:
     //+------------------------------------------------------------------+
     //| Ejecutar votación con pesos dinámicos                           |
     //+------------------------------------------------------------------+
-    VotingResult ExecuteVoting(int signals[], double confidences[], DynamicWeight &weights[]) {
+    VotingResult ExecuteVoting(int &signals[], double &confidences[], DynamicWeight &weights[]) {
         VotingResult result;
         result.Initialize();
         result.context = m_lastContext;
         result.decisionTime = TimeCurrent();
 
-        // Copiar pesos
-        ArrayResize(result.weights, 5);
+        // Copiar pesos (result.weights ya está dimensionado como [5])
         for(int i = 0; i < 5; i++) {
             result.weights[i] = weights[i];
         }
@@ -1511,4 +1515,4 @@ private:
     }
 };
 
-//+------------------------------------------------------------------+
+//+------------------------------------------------------------------+#endif // ADAPTIVE_VOTING_SYSTEM_MQH

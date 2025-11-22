@@ -128,7 +128,7 @@ enum ENUM_ML_STRATEGY {
 
 enum ENUM_MARKET_SESSION {
     SESSION_ASIAN = 0,
-    SESSION_LONDON = 1,
+    SESSION_LONDON_ML = 1,  // Renombrado para evitar conflicto con ENUM_TRADING_SESSION
     SESSION_NEWYORK = 2,
     SESSION_OVERLAP = 3,
     SESSION_CLOSED = 4
@@ -981,7 +981,8 @@ enum ENUM_VOTING_DIRECTION {
 };
 
 //--- Estructura: Celda de Performance Contextual (Micro-Cerebro)
-struct ContextualPerformanceCell {
+// Renombrada para evitar conflicto con VotingStatistics.mqh
+struct ML_ContextualPerformanceCell {
     // Métricas estadísticas
     int totalSignals;              // Total de señales enviadas en este contexto
     int wins;                      // Trades ganadores
@@ -1098,7 +1099,8 @@ struct ConsensusResult {
 };
 
 //--- Estructura: Contexto Actual del Mercado
-struct MarketContextSnapshot {
+// Renombrada para evitar conflicto con VotingStatistics.mqh
+struct ML_MarketContextSnapshot {
     ENUM_VOTING_SESSION session;
     ENUM_VOTING_VOLATILITY volatility;
     datetime timestamp;
@@ -1121,13 +1123,13 @@ class ContextualVotingSystem {
 private:
     //--- Matriz 4D de Performance: [Indicador][Sesión][Volatilidad][Dirección]
     //    5 indicadores x 3 sesiones x 2 regímenes x 2 direcciones = 60 micro-cerebros
-    ContextualPerformanceCell m_performanceMatrix[5][3][2][2];
+    ML_ContextualPerformanceCell m_performanceMatrix[5][3][2][2];
 
     //--- Información de indicadores
     IndicatorInfo m_indicators[5];
 
     //--- Contexto actual
-    MarketContextSnapshot m_currentContext;
+    ML_MarketContextSnapshot m_currentContext;
 
     //--- Cache de ATR para detección de volatilidad
     double m_atrHistory[100];
@@ -1307,7 +1309,7 @@ public:
         dir = MathMax(0, MathMin(1, dir));
 
         // Obtener celda de performance contextual
-        ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
+        ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
 
         // Peso base del indicador
         double baseWeight = m_indicators[indicatorId].baseWeight;
@@ -1520,7 +1522,7 @@ public:
         string dirName[] = {"BUY", "SELL"};
         string resultIcon = success ? "✅" : "❌";
 
-        ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
+        ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
 
         Print(StringFormat(
             "%s APRENDIZAJE | %s | %s-%s-%s | WR: %.1f%% (%d/%d) | Profit: $%.2f | Racha: %dW/%dL",

@@ -9,6 +9,7 @@
 #property version   "11.03"
 #property strict
 
+#include <CommonStructures.mqh>
 #include <Trade/Trade.mqh>
 #include <SupportResistance.mqh>
 #include <VotingStatistics.mqh>
