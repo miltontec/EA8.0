@@ -43,6 +43,7 @@ enum ENUM_MARKET_DIRECTION {
 // Enumeración de Dirección de Voto
 enum ENUM_VOTE_DIRECTION {
     VOTE_NEUTRAL = 0,   // Sin dirección clara
+    VOTE_NONE    = 0,   // Alias para VOTE_NEUTRAL
     VOTE_BUY     = 1,   // Voto de compra
     VOTE_SELL    = -1   // Voto de venta
 };
@@ -1069,6 +1070,15 @@ public:
         // Normalizar pesos de indicadores activos
         NormalizeWeights(weights);
 
+        return true;
+    }
+
+    //+------------------------------------------------------------------+
+    //| Registrar voto de un componente (método stub)                   |
+    //+------------------------------------------------------------------+
+    bool RecordVote(ENUM_COMPONENT_TYPE component, ENUM_VOTE_DIRECTION direction, double confidence, string context) {
+        // TODO: Implementar registro de votos por componente
+        // Por ahora retorna true para permitir compilación
         return true;
     }
 

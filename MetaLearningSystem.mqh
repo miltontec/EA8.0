@@ -1522,7 +1522,7 @@ public:
         string dirName[] = {"BUY", "SELL"};
         string resultIcon = success ? "✅" : "❌";
 
-        ML_ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
+        ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
 
         Print(StringFormat(
             "%s APRENDIZAJE | %s | %s-%s-%s | WR: %.1f%% (%d/%d) | Profit: $%.2f | Racha: %dW/%dL",
@@ -2009,8 +2009,9 @@ private:
         }
 
         // Ordenar niveles
-        ArraySort(m_supportLevels, WHOLE_ARRAY, 0, MODE_DESCEND);
-        ArraySort(m_resistanceLevels, WHOLE_ARRAY, 0, MODE_ASCEND);
+        ArraySort(m_supportLevels);
+        ArrayReverse(m_supportLevels);  // Orden descendente
+        ArraySort(m_resistanceLevels);  // Orden ascendente
     }
 
     //+------------------------------------------------------------------+
