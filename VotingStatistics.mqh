@@ -48,6 +48,15 @@ enum ENUM_VOTE_DIRECTION {
     VOTE_SELL    = -1   // Voto de venta
 };
 
+// Tipos de componentes del sistema
+enum ENUM_COMPONENT_TYPE {
+    COMPONENT_SUPPORT_RESIST = 0,
+    COMPONENT_ACCUM_ZONES = 1,
+    COMPONENT_PATTERN_MEMORY = 2,
+    COMPONENT_BREAKOUT_DETECT = 3,
+    COMPONENT_INSTITUTIONAL = 4
+};
+
 // Estructura de Emoción de Mercado
 struct MarketEmotion {
     double fear;           // Nivel de miedo (0-1)
@@ -86,6 +95,9 @@ struct ConsensusMemory {
     string participating_agents[5];
     double agent_confidences[5];
     ENUM_VOTE_DIRECTION agent_votes[5];
+
+    // Contexto de decisión
+    DecisionContext context;
 
     void Initialize() {
         consensus_id = 0;
