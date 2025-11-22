@@ -1309,7 +1309,7 @@ public:
         dir = MathMax(0, MathMin(1, dir));
 
         // Obtener celda de performance contextual
-        ML_ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
+        ML_ContextualPerformanceCell cell = m_performanceMatrix[indicatorId][ses][vol][dir];
 
         // Peso base del indicador
         double baseWeight = m_indicators[indicatorId].baseWeight;
